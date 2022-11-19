@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.UnsupportedCharsetException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +28,7 @@ public class TextFileReaderTest extends FileReaderTestBase {
     @Override
     protected Path createDataFile(ReaderFsTestConfig fsConfig, Object... args) throws IOException {
         CompressionType compression = args.length < 1 ? COMPRESSION_TYPE_DEFAULT : (CompressionType) args[0];
-        File txtFile = File.createTempFile("test-", "." + FILE_EXTENSION);
+        File txtFile = Files.createTempFile("test-", "." + FILE_EXTENSION).toFile();
         try (PrintWriter writer = new PrintWriter(getOutputStream(txtFile, compression))) {
             IntStream.range(0, NUM_RECORDS).forEach(index -> {
                 String value = String.format("%d_%s", index, UUID.randomUUID());

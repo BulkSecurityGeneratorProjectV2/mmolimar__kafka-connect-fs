@@ -18,6 +18,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -327,7 +328,7 @@ abstract class PolicyTestBase {
 
             FileSystem fs = fsConfig.getFs();
             for (Path dir : fsConfig.getDirectories()) {
-                File tmp = File.createTempFile("test-", ".txt");
+                File tmp = Files.createTempFile("test-", ".txt").toFile();
                 try (PrintWriter writer = new PrintWriter(new FileOutputStream(tmp))) {
                     writer.append("test");
                 }

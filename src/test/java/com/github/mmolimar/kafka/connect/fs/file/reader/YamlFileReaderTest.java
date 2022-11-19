@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,7 @@ public class YamlFileReaderTest extends JacksonFileReaderTest {
     @ParameterizedTest
     @MethodSource("fileSystemConfigProvider")
     public void invalidFileFormat(ReaderFsTestConfig fsConfig) throws IOException {
-        File tmp = File.createTempFile("test-", "." + getFileExtension());
+        File tmp = Files.createTempFile("test-", "." + getFileExtension()).toFile();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(tmp))) {
             writer.write("test");
         }

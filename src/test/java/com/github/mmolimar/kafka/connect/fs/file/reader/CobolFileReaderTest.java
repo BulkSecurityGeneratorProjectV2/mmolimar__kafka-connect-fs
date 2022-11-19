@@ -35,7 +35,7 @@ public class CobolFileReaderTest extends FileReaderTestBase {
     @Override
     protected Path createDataFile(ReaderFsTestConfig fsConfig, Object... args) throws IOException {
         String filename = args.length < 1 ? DATA_FILENAME_1 : args[0].toString();
-        File cobolFile = File.createTempFile("test-", "." + getFileExtension());
+        File cobolFile = Files.createTempFile("test-", "." + getFileExtension()).toFile();
         try (InputStream is = CobolFileReaderTest.class.getResourceAsStream("/file/reader/data/cobol/" + filename + "." + getFileExtension())) {
             Files.copy(is, cobolFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
@@ -49,7 +49,7 @@ public class CobolFileReaderTest extends FileReaderTestBase {
     @ParameterizedTest
     @MethodSource("fileSystemConfigProvider")
     public void invalidFileFormat(ReaderFsTestConfig fsConfig) throws IOException {
-        File tmp = File.createTempFile("test-", "." + getFileExtension());
+        File tmp = Files.createTempFile("test-", "." + getFileExtension()).toFile();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(tmp))) {
             writer.write("test");
         }
@@ -61,7 +61,7 @@ public class CobolFileReaderTest extends FileReaderTestBase {
     @ParameterizedTest
     @MethodSource("fileSystemConfigProvider")
     public void emptyFile(ReaderFsTestConfig fsConfig) throws IOException {
-        File tmp = File.createTempFile("test-", "." + getFileExtension());
+        File tmp = Files.createTempFile("test-", "." + getFileExtension()).toFile();
         Path path = new Path(new Path(fsConfig.getFsUri()), tmp.getName());
         fsConfig.getFs().moveFromLocalFile(new Path(tmp.getAbsolutePath()), path);
         getReader(fsConfig.getFs(), path, getReaderConfig());
@@ -95,7 +95,7 @@ public class CobolFileReaderTest extends FileReaderTestBase {
         readerConfig.put(CobolFileReader.FILE_READER_COBOL_COPYBOOK_PATH, "");
         assertThrows(ConnectException.class, () -> getReader(fsConfig.getFs(), file, readerConfig));
 
-        File cobolFile = File.createTempFile("copybook-", "." + getFileExtension());
+        File cobolFile = Files.createTempFile("copybook-", "." + getFileExtension()).toFile();
         try (InputStream is = CobolFileReaderTest.class.getResourceAsStream("/file/reader/data/cobol/" + dataFilename + ".cpy")) {
             Files.copy(is, cobolFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
         }

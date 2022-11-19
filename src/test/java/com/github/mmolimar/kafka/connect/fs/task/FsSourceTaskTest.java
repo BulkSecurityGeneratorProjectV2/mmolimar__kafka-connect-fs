@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -301,7 +302,7 @@ public class FsSourceTaskTest {
     @MethodSource("fileSystemConfigProvider")
     public void exceptionReadingFile(TaskFsTestConfig fsConfig) throws IOException {
         Map<String, String> props = new HashMap<>(fsConfig.getTaskConfig());
-        File tmp = File.createTempFile("test-", ".txt");
+        File tmp = Files.createTempFile("test-", ".txt").toFile();
         try (PrintWriter writer = new PrintWriter(tmp)) {
             writer.append("txt");
         }
@@ -492,7 +493,7 @@ public class FsSourceTaskTest {
     }
 
     private File fillDataFile() throws IOException {
-        File txtFile = File.createTempFile("test-", ".txt");
+        File txtFile = Files.createTempFile("test-", ".txt").toFile();
         try (FileWriter writer = new FileWriter(txtFile)) {
 
             IntStream.range(0, NUM_RECORDS).forEach(index -> {

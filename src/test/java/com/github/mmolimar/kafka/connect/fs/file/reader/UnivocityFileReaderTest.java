@@ -14,6 +14,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.nio.charset.UnsupportedCharsetException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +38,7 @@ abstract class UnivocityFileReaderTest<T extends UnivocityFileReader<?>> extends
     @ParameterizedTest
     @MethodSource("fileSystemConfigProvider")
     public void emptyFile(ReaderFsTestConfig fsConfig) throws IOException {
-        File tmp = File.createTempFile("test-", "." + getFileExtension());
+        File tmp = Files.createTempFile("test-", "." + getFileExtension()).toFile();
         Path path = new Path(new Path(fsConfig.getFsUri()), tmp.getName());
         fsConfig.getFs().moveFromLocalFile(new Path(tmp.getAbsolutePath()), path);
         getReader(fsConfig.getFs(), path, getReaderConfig());
@@ -46,7 +47,7 @@ abstract class UnivocityFileReaderTest<T extends UnivocityFileReader<?>> extends
     @ParameterizedTest
     @MethodSource("fileSystemConfigProvider")
     public void invalidFileFormat(ReaderFsTestConfig fsConfig) throws IOException {
-        File tmp = File.createTempFile("test-", "." + getFileExtension());
+        File tmp = Files.createTempFile("test-", "." + getFileExtension()).toFile();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(tmp))) {
             writer.write("test");
         }

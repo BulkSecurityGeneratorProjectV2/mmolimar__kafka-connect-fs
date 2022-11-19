@@ -19,6 +19,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -42,7 +43,7 @@ public class AvroFileReaderTest extends FileReaderTestBase {
 
     @Override
     protected Path createDataFile(ReaderFsTestConfig fsConfig, Object... args) throws IOException {
-        File avroFile = File.createTempFile("test-", "." + getFileExtension());
+        File avroFile = Files.createTempFile("test-", "." + getFileExtension()).toFile();
         DatumWriter<GenericRecord> writer = new GenericDatumWriter<>(schema);
         try (DataFileWriter<GenericRecord> dataFileWriter = new DataFileWriter<>(writer)) {
             dataFileWriter.setFlushOnEveryBlock(true);

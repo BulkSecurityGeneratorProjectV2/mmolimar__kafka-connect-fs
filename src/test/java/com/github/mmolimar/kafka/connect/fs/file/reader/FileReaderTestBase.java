@@ -17,6 +17,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -100,7 +101,7 @@ abstract class FileReaderTestBase {
     @ParameterizedTest
     @MethodSource("fileSystemConfigProvider")
     public void emptyFile(ReaderFsTestConfig fsConfig) throws IOException {
-        File tmp = File.createTempFile("test-", "." + getFileExtension());
+        File tmp = Files.createTempFile("test-", "." + getFileExtension()).toFile();
         Path path = new Path(new Path(fsConfig.getFsUri()), tmp.getName());
         fsConfig.getFs().moveFromLocalFile(new Path(tmp.getAbsolutePath()), path);
         assertThrows(ConnectException.class, () -> getReader(fsConfig.getFs(), path, getReaderConfig()));
@@ -116,7 +117,7 @@ abstract class FileReaderTestBase {
     @ParameterizedTest
     @MethodSource("fileSystemConfigProvider")
     public void invalidFileFormat(ReaderFsTestConfig fsConfig) throws IOException {
-        File tmp = File.createTempFile("test-", "." + getFileExtension());
+        File tmp = Files.createTempFile("test-", "." + getFileExtension()).toFile();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(tmp))) {
             writer.write("test");
         }

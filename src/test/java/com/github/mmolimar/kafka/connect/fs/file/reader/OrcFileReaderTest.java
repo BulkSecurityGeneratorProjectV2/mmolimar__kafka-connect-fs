@@ -14,6 +14,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -43,7 +44,7 @@ public class OrcFileReaderTest extends FileReaderTestBase {
     @Override
     protected Path createDataFile(ReaderFsTestConfig fsConfig, Object... args) throws IOException {
         int numRecords = args.length < 1 ? NUM_RECORDS : (int) args[0];
-        File orcFile = File.createTempFile("test-", "." + getFileExtension());
+        File orcFile = Files.createTempFile("test-", "." + getFileExtension()).toFile();
 
         TypeDescription schema = TypeDescription.createStruct();
         schema.addField(FIELD_INTEGER, TypeDescription.createInt());
@@ -147,7 +148,7 @@ public class OrcFileReaderTest extends FileReaderTestBase {
 
     private Path createDataFileWithoutStruct(ReaderFsTestConfig fsConfig, Object... args) throws IOException {
         int numRecords = args.length < 1 ? NUM_RECORDS : (int) args[0];
-        File orcFile = File.createTempFile("test-", "." + getFileExtension());
+        File orcFile = Files.createTempFile("test-", "." + getFileExtension()).toFile();
 
         TypeDescription schema = TypeDescription.createLong();
         Properties props = new Properties();
@@ -173,7 +174,7 @@ public class OrcFileReaderTest extends FileReaderTestBase {
     @ParameterizedTest
     @MethodSource("fileSystemConfigProvider")
     public void emptyFile(ReaderFsTestConfig fsConfig) throws IOException {
-        File tmp = File.createTempFile("test-", "." + getFileExtension());
+        File tmp = Files.createTempFile("test-", "." + getFileExtension()).toFile();
         Path path = new Path(new Path(fsConfig.getFsUri()), tmp.getName());
         fsConfig.getFs().moveFromLocalFile(new Path(tmp.getAbsolutePath()), path);
         FileReader reader = getReader(fsConfig.getFs(), path, getReaderConfig());

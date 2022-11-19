@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.nio.charset.UnsupportedCharsetException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +47,7 @@ abstract class JacksonFileReaderTest extends FileReaderTestBase {
         int numRecords = args.length < 1 ? NUM_RECORDS : (int) args[0];
         boolean recordPerLine = args.length < 2 || (boolean) args[1];
         CompressionType compression = args.length < 3 ? COMPRESSION_TYPE_DEFAULT : (CompressionType) args[2];
-        File txtFile = File.createTempFile("test-", "." + getFileExtension());
+        File txtFile = Files.createTempFile("test-", "." + getFileExtension()).toFile();
         try (PrintWriter writer = new PrintWriter(getOutputStream(txtFile, compression))) {
             ObjectWriter objectWriter = getObjectMapper().writerWithDefaultPrettyPrinter();
             IntStream.range(0, numRecords).forEach(index -> {
@@ -100,7 +101,7 @@ abstract class JacksonFileReaderTest extends FileReaderTestBase {
     @ParameterizedTest
     @MethodSource("fileSystemConfigProvider")
     public void emptyFile(ReaderFsTestConfig fsConfig) throws IOException {
-        File tmp = File.createTempFile("test-", "." + getFileExtension());
+        File tmp = Files.createTempFile("test-", "." + getFileExtension()).toFile();
         Path path = new Path(new Path(fsConfig.getFsUri()), tmp.getName());
         fsConfig.getFs().moveFromLocalFile(new Path(tmp.getAbsolutePath()), path);
         FileReader reader = getReader(fsConfig.getFs(), path, getReaderConfig());

@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -21,7 +22,7 @@ public class CsvFileReaderTest extends UnivocityFileReaderTest<CsvFileReader> {
     protected Path createDataFile(ReaderFsTestConfig fsConfig, Object... args) throws IOException {
         boolean header = args.length < 1 || (boolean) args[0];
         CompressionType compression = args.length < 2 ? COMPRESSION_TYPE_DEFAULT : (CompressionType) args[1];
-        File txtFile = File.createTempFile("test-", "." + getFileExtension());
+        File txtFile = Files.createTempFile("test-", "." + getFileExtension()).toFile();
         try (PrintWriter writer = new PrintWriter(getOutputStream(txtFile, compression))) {
             if (header) {
                 String headerValue = String.join("#", FIELD_COLUMN1, FIELD_COLUMN2, FIELD_COLUMN3, FIELD_COLUMN4,
@@ -44,7 +45,7 @@ public class CsvFileReaderTest extends UnivocityFileReaderTest<CsvFileReader> {
     @ParameterizedTest
     @MethodSource("fileSystemConfigProvider")
     public void readAllDataWithMalformedRows(ReaderFsTestConfig fsConfig) throws IOException {
-        File tmp = File.createTempFile("test-", "." + getFileExtension());
+        File tmp = Files.createTempFile("test-", "." + getFileExtension()).toFile();
         try (FileWriter writer = new FileWriter(tmp)) {
             String headerValue = String.join(",", FIELD_COLUMN1, FIELD_COLUMN2, FIELD_COLUMN3, FIELD_COLUMN4,
                     FIELD_COLUMN5, FIELD_COLUMN6, FIELD_COLUMN7, FIELD_COLUMN8, FIELD_COLUMN9);
@@ -87,7 +88,7 @@ public class CsvFileReaderTest extends UnivocityFileReaderTest<CsvFileReader> {
     @ParameterizedTest
     @MethodSource("fileSystemConfigProvider")
     public void readAllDataWithEmptyAndNullValueWithAllowNullsAndWithoutSchemaProvided(ReaderFsTestConfig fsConfig) throws IOException {
-        File tmp = File.createTempFile("test-", "." + getFileExtension());
+        File tmp = Files.createTempFile("test-", "." + getFileExtension()).toFile();
         try (FileWriter writer = new FileWriter(tmp)) {
             String headerValue = String.join(",", FIELD_COLUMN1, FIELD_COLUMN2, FIELD_COLUMN3);
             writer.append(headerValue + "\n");

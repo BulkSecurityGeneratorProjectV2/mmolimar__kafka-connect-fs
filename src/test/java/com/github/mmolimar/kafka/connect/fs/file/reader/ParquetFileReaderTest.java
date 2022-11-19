@@ -24,6 +24,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -52,7 +53,7 @@ public class ParquetFileReaderTest extends FileReaderTestBase {
     @Override
     protected Path createDataFile(ReaderFsTestConfig fsConfig, Object... args) throws IOException {
         FileSystem fs = fsConfig.getFs();
-        File parquetFile = File.createTempFile("test-", "." + getFileExtension());
+        File parquetFile = Files.createTempFile("test-", "." + getFileExtension()).toFile();
 
         try (ParquetWriter<GenericRecord> writer = AvroParquetWriter.<GenericRecord>builder(new Path(parquetFile.toURI()))
                 .withConf(fs.getConf()).withWriteMode(ParquetFileWriter.Mode.OVERWRITE).withSchema(readerSchema).build()) {
@@ -78,7 +79,7 @@ public class ParquetFileReaderTest extends FileReaderTestBase {
     @ParameterizedTest
     @MethodSource("fileSystemConfigProvider")
     public void emptyFile(ReaderFsTestConfig fsConfig) throws IOException {
-        File tmp = File.createTempFile("test-", "." + getFileExtension());
+        File tmp = Files.createTempFile("test-", "." + getFileExtension()).toFile();
         Path path = new Path(new Path(fsConfig.getFsUri()), tmp.getName());
         fsConfig.getFs().moveFromLocalFile(new Path(tmp.getAbsolutePath()), path);
         getReader(fsConfig.getFs(), path, getReaderConfig());
@@ -87,7 +88,7 @@ public class ParquetFileReaderTest extends FileReaderTestBase {
     @ParameterizedTest
     @MethodSource("fileSystemConfigProvider")
     public void invalidFileFormat(ReaderFsTestConfig fsConfig) throws IOException {
-        File tmp = File.createTempFile("test-", "." + getFileExtension());
+        File tmp = Files.createTempFile("test-", "." + getFileExtension()).toFile();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(tmp))) {
             writer.write("test");
         }

@@ -5,6 +5,7 @@ import org.apache.hadoop.fs.Path;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +20,7 @@ public class FixedWidthFileReaderTest extends UnivocityFileReaderTest<FixedWidth
     protected Path createDataFile(ReaderFsTestConfig fsConfig, Object... args) throws IOException {
         boolean header = args.length < 1 || (boolean) args[0];
         CompressionType compression = args.length < 2 ? COMPRESSION_TYPE_DEFAULT : (CompressionType) args[1];
-        File txtFile = File.createTempFile("test-", "." + getFileExtension());
+        File txtFile = Files.createTempFile("test-", "." + getFileExtension()).toFile();
         try (PrintWriter writer = new PrintWriter(getOutputStream(txtFile, compression))) {
             if (header) {
                 writer.append(String.format("%-" + fieldLengths[0] + "s", FIELD_COLUMN1) +

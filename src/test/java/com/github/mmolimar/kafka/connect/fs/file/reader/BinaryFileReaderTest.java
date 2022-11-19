@@ -23,7 +23,7 @@ public class BinaryFileReaderTest extends FileReaderTestBase {
 
     @Override
     protected Path createDataFile(ReaderFsTestConfig fsConfig, Object... args) throws IOException {
-        File binaryFile = File.createTempFile("test-", "." + getFileExtension());
+        File binaryFile = Files.createTempFile("test-", "." + getFileExtension()).toFile();
         byte[] content = "test".getBytes();
         Path path = new Path(new Path(fsConfig.getFsUri()), binaryFile.getName());
         Files.write(binaryFile.toPath(), content);
@@ -35,7 +35,7 @@ public class BinaryFileReaderTest extends FileReaderTestBase {
     @ParameterizedTest
     @MethodSource("fileSystemConfigProvider")
     public void emptyFile(ReaderFsTestConfig fsConfig) throws IOException {
-        File tmp = File.createTempFile("test-", "." + getFileExtension());
+        File tmp = Files.createTempFile("test-", "." + getFileExtension()).toFile();
         Path path = new Path(new Path(fsConfig.getFsUri()), tmp.getName());
         fsConfig.getFs().moveFromLocalFile(new Path(tmp.getAbsolutePath()), path);
         FileReader reader = getReader(fsConfig.getFs(), path, getReaderConfig());

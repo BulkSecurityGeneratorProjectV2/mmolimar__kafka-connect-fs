@@ -13,6 +13,7 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -29,7 +30,7 @@ public class SequenceFileReaderTest extends FileReaderTestBase {
     @Override
     protected Path createDataFile(ReaderFsTestConfig fsConfig, Object... args) throws IOException {
         FileSystem fs = fsConfig.getFs();
-        File seqFile = File.createTempFile("test-", "." + getFileExtension());
+        File seqFile = Files.createTempFile("test-", "." + getFileExtension()).toFile();
         try (SequenceFile.Writer writer = SequenceFile.createWriter(fs.getConf(),
                 SequenceFile.Writer.file(new Path(seqFile.getAbsolutePath())),
                 SequenceFile.Writer.keyClass(IntWritable.class), SequenceFile.Writer.valueClass(Text.class))) {
